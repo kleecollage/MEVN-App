@@ -1,6 +1,8 @@
-import { User } from '../models/User.js';
 import jwt from 'jsonwebtoken';
+import { User } from '../models/User.js';
+import { generateRefreshToken, generateToken } from '../utils/tokenManager.js';
 
+// REGISTER CONTROLLER
 export const register = async (req, res) => {
 	// console.log(req.body);
 	const { email, password } = req.body;
@@ -26,6 +28,7 @@ export const register = async (req, res) => {
 	}
 };
 
+// LOGIN CONTROLLER
 export const login = async (req, res) => {
 	// console.log(req.body);
 	try {
@@ -39,10 +42,11 @@ export const login = async (req, res) => {
 		if (!respuestaPassword)
 			return res.status(403).json({ error: 'Incorrect Password' });
     
-    // JWT payload
-    const token = jwt.sign({ uid: user.id }, process.env.JWT_SECRET)
-    // TODO: Refresh token
-		return res.json({ token });
+    //* TOKEN *//
+    const { token, expiresIn } = generateToken(user.id)
+		generateRefreshToken(user.id, res)
+
+    return res.json( {token, expiresIn} );
 	} catch (error) {
 		console.log(error);
 
@@ -51,3 +55,40 @@ export const login = async (req, res) => {
 			.json({ error: 'Server error. Contact with administrator' });
 	}
 };
+
+export const infoUser = async(req, res) => { 
+  try {
+		const user = await User.findById(req.uid).lean();
+    return await res.json({ email: user.email, uid: user.uid })
+  } catch (error) {
+    console.log(error)
+		return res.status(500).json({error: error.message})
+  }
+}
+
+export const refreshToken = (req, res) => {
+	try {
+		const refreshTokenCookie = req.cookies.refreshToken;
+		if(!refreshTokenCookie) throw new Error("Token dosn't exists");
+
+    const { uid }= jwt.verify(refreshTokenCookie, process.env.JWT_REFRESH)
+    const { token, expiresIn } = generateToken(uid);
+
+		return res.json({ token, expiresIn });
+	} catch (error) {
+		console.log(error)
+		const TokenVerificationErrors = {
+			"invalid signature": "Invalid JWT signature",
+			"jwt expired": "JWT expired",
+			"invalid token": "Invalid token",
+			"No Bearer": "Format Bearer needed",
+			"jwt malformed": "Invalid JWT format"
+		}		
+		return res.status(401).send({error: TokenVerificationErrors[error.message] });
+	}
+}
+
+export const logout = (req, res) => {
+	res.clearCookie('refreshToken');
+	res.json({ok: true})
+}
