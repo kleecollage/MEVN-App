@@ -1,4 +1,6 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
+import bcryptjs from 'bcryptjs';
+import { decrypt } from 'dotenv';
 
 const {Schema, model} = mongoose;
 
@@ -9,12 +11,27 @@ const userSchema = new Schema({
     trim: true,
     unique: true,
     lowercase: true,
-    index: {unique: true}
   },
   password: {
     type: String,
     required: true
   }
-})
+});
 
-export const User = model('user', userSchema)
+userSchema.pre('save', async function(next) {
+  const user = this;
+  if (!user.isModified('password')) return;
+  try {
+    const salt = await bcryptjs.genSalt(10)
+    user.password = await bcryptjs.hash(user.password, salt)
+    next()
+  } catch (error) {
+    next(error);
+  }
+});
+
+userSchema.methods.comparePassword = async function(candidatePassword) {
+  return await bcryptjs.compare(candidatePassword, this.password)
+}
+
+export const User = model('User', userSchema)
