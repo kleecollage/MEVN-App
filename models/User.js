@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import bcryptjs from 'bcryptjs';
-import { decrypt } from 'dotenv';
 
 const {Schema, model} = mongoose;
 

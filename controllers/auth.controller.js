@@ -1,4 +1,3 @@
-import jwt from 'jsonwebtoken';
 import { User } from '../models/User.js';
 import { generateRefreshToken, generateToken } from '../utils/tokenManager.js';
 
@@ -14,8 +13,12 @@ export const register = async (req, res) => {
 		user = new User({ email, password });
 		const savedUser = await user.save();
 		console.log('saved user: ', savedUser);
-		// TODO: generate  JWT
-		return res.status(201).json({ ok: true });
+
+		//* TOKEN *//
+		const { token, expiresIn } = generateToken(user.id)
+		generateRefreshToken(user.id, res)
+
+		return res.status(201).json({ token, expiresIn });
 	} catch (error) {
 		console.log(error);
 		// default mongoose auth validation
@@ -68,23 +71,12 @@ export const infoUser = async(req, res) => {
 
 export const refreshToken = (req, res) => {
 	try {
-		const refreshTokenCookie = req.cookies.refreshToken;
-		if(!refreshTokenCookie) throw new Error("Token dosn't exists");
-
-    const { uid }= jwt.verify(refreshTokenCookie, process.env.JWT_REFRESH)
-    const { token, expiresIn } = generateToken(uid);
+    const { token, expiresIn } = generateToken(req.uid);
 
 		return res.json({ token, expiresIn });
 	} catch (error) {
-		console.log(error)
-		const TokenVerificationErrors = {
-			"invalid signature": "Invalid JWT signature",
-			"jwt expired": "JWT expired",
-			"invalid token": "Invalid token",
-			"No Bearer": "Format Bearer needed",
-			"jwt malformed": "Invalid JWT format"
-		}		
-		return res.status(401).send({error: TokenVerificationErrors[error.message] });
+		console.log(error);
+		return res.status(500).json({error: error.message})
 	}
 }
 

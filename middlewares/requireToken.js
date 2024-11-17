@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import { tokenVerificationErrors } from '../utils/tokenManager.js';
 
 /* THIS METHOD IS TO STORE THE TOKEN IN LOCALSTORAGE 
  export const requireToken = (req, res, next) => {
@@ -38,14 +39,8 @@ export const requireToken = (req, res, next) => {
     
     next();
   } catch (error) {
-    console.log(error);
-    const TokenVerificationErrors = {
-      "invalid signature": "Invalid JWT signature",
-      "jwt expired": "JWT expired",
-      "invalid token": "Invalid token",
-      "No Bearer": "Format Bearer needed",
-      "jwt malformed": "Invalid JWT format"
-    }
-    return res.status(401).send({error: TokenVerificationErrors[error.message] });
+    console.log(error.message);
+    tokenVerificationErrors
+    return res.status(401).send({error: tokenVerificationErrors[error.message] });
   }
 }
