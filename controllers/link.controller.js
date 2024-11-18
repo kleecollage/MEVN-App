@@ -47,7 +47,7 @@ export const getLink = async (req, res) => {
 		if (!link) 
 			return res.status(404).json({ error: "Link doesn't exists" });
 
-		return res.status(201).json({ longLink: link.longLink });
+		return res.json({ longLink: link.longLink });
 	} catch (error) {
 		console.log(error);
 		if (error.kind == 'ObjectId') {

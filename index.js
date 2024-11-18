@@ -1,27 +1,30 @@
-import express from "express";
-import cookieParser from "cookie-parser";
-import cors from 'cors';
 import 'dotenv/config';
 import './database/connectDb.js';
+import cookieParser from "cookie-parser";
+import express from "express";
+import cors from 'cors';
 import authRouter from './routes/auth.route.js';
 import linkRouter from './routes/link.route.js';
 import redirectRoute from './routes/redirect.route.js'
+
 const app = express();
-const whiteList = [ process.env.ORIGIN1, process.env.ORIGIN2, process.env.ORIGIN3, process.env.ORIGIN4]
+const whiteList = [ process.env.ORIGIN1, process.env.ORIGIN2]
+
+//** CORS **//
+//app.use(cors());
 
 // app.use(cors({
 //   origin: [process.env.ORIGIN1]
 // }))
-//** CORS **//
-app.use(cors());
-// app.use(cors({
-//   origin: function(origin, callback) {
-//     if (!origin || whiteList.includes(origin)) {
-//       return callback(null, origin);
-//     }
-//     return callback("CORS error. Origin: " + origin + " not authorized")
-//   }
-// }))
+
+app.use(cors({
+  origin: function(origin, callback) {
+    if (!origin || whiteList.includes(origin)) {
+      return callback(null, origin);
+    }
+    return callback("CORS error. Origin: " + origin + " not authorized")
+  }
+}))
 
 //* MIDLEWARES *// 
 app.use(express.json());
