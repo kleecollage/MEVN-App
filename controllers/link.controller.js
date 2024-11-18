@@ -42,7 +42,7 @@ export const getLinkV1 = async (req, res) => {
 export const getLink = async (req, res) => {
 	try {
 		const { nanoLink } = req.params;
-		const link = await Link.findOne({nanoLink});
+		const link = await Link.findOne({ nanoLink });
 		// validations
 		if (!link) 
 			return res.status(404).json({ error: "Link doesn't exists" });
