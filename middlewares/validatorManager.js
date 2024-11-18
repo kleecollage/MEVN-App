@@ -2,9 +2,7 @@ import axios from "axios";
 import { validationResult, body, param } from "express-validator";
 
 export const validationResultExpress = (req, res, next) => {
- 
   const errors = validationResult(req);
-
   if (!errors.isEmpty()) {
     return res.status(404).json({errors: errors.array()});
   };
@@ -40,11 +38,7 @@ export const bodyLinkValidator = [
 ]
 
 export const bodyRegisterValidator = [ 
-  body('email', 'This email is not valid')
-    .trim()
-    .isEmail()
-    .normalizeEmail(),
-  
+  body('email', 'This email is not valid').trim().isEmail().normalizeEmail(),
   body('password', 'Password must have at least 6 characters')
     .trim()
     .isLength({ min: 6 })

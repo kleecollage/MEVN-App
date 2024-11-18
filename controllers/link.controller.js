@@ -14,13 +14,15 @@ export const getLinks = async (req, res) => {
 	}
 };
 
-// GET ONE
-export const getLink = async (req, res) => {
+//** GET ONE **//
+// Usual GET for traditional CRUDS
+export const getLinkV1 = async (req, res) => {
 	try {
 		const { id } = req.params;
-
 		const link = await Link.findById(id);
-		if (!link) return res.status(404).json({ error: "Link doesn't exists" });
+
+		if (!link) 
+			return res.status(404).json({ error: "Link doesn't exists" });
 
     if(!link.uid.equals(req.uid)) 
       return res.status(401).json({ error: "Access Denied"})
@@ -36,7 +38,27 @@ export const getLink = async (req, res) => {
 	}
 };
 
-// CREATE LINK
+//** GET ONE **//
+export const getLink = async (req, res) => {
+	try {
+		const { nanoLink } = req.params;
+		const link = await Link.findOne({nanoLink});
+		// validations
+		if (!link) 
+			return res.status(404).json({ error: "Link doesn't exists" });
+
+		return res.status(201).json({ longLink: link.longLink });
+	} catch (error) {
+		console.log(error);
+		if (error.kind == 'ObjectId') {
+			return res.status(403).json({ error: 'Invalid ID format' });
+		}
+
+		return res.status(500).json({ error: 'Server errror' });
+	}
+};
+
+//** CREATE LINK **//
 export const createLink = async (req, res) => {
 	try {
 		let { longLink } = req.body;
@@ -54,18 +76,53 @@ export const createLink = async (req, res) => {
 	}
 };
 
-// REMOVE LINK
+//** REMOVE LINK **/
 export const removeLink = async(req, res) => {
   try {
 		const { id } = req.params;
-
 		const link = await Link.findById(id);
-		if (!link) return res.status(404).json({ error: "Link doesn't exists" });
+
+		if (!link) 
+			return res.status(404).json({ error: "Link doesn't exists" });
 
     if(!link.uid.equals(req.uid)) 
       return res.status(401).json({ error: "Access Denied"})
 
     await Link.findByIdAndDelete(id);
+
+		return res.json({ link });
+	} catch (error) {
+		console.log(error);
+		if (error.kind == 'ObjectId') {
+			return res.status(403).json({ error: 'Invalid ID format' });
+		}
+
+		return res.status(500).json({ error: 'Server errror' });
+	}
+}
+
+//** UPDATE LINK **//
+export const updateLink = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const { longLink } = req.body;
+		const link = await Link.findById(id);
+		
+		console.log(longLink)
+
+		if (!link) 
+			return res.status(404).json({ error: "Link doesn't exists" });
+		
+		if (!longLink.startsWith('https://')) {
+			longLink = 'https://' + longLink;
+		}
+    
+		if(!link.uid.equals(req.uid))
+      return res.status(401).json({ error: "Access Denied"})
+
+		// update
+    link.longLink = longLink;
+		await link.save();
 
 		return res.json({ link });
 	} catch (error) {

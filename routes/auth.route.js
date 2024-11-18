@@ -7,23 +7,13 @@ import { bodyLoginValidator, bodyRegisterValidator } from '../middlewares/valida
 const router = Router();
 
 // REGISTER AUTH
-router.post(
-  '/register',
-  bodyRegisterValidator,
-  register
-);
-
+router.post('/register', bodyRegisterValidator, register);
 // LOGIN AUTH
-router.post(
-  '/login', 
-  bodyLoginValidator,
-  login
-);
-
+router.post('/login', bodyLoginValidator, login);
+// PROTECTED ROUTE
 router.get('/protected', requireToken, infoUser)
-
 router.get('/refresh', requireRefreshToken, refreshToken)
-
+// LGOUT 
 router.get('/logout', logout)
 
 export default router;

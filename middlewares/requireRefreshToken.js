@@ -8,7 +8,7 @@ export const requireRefreshToken = (req, res, next) => {
 
     const { uid }= jwt.verify(refreshTokenCookie, process.env.JWT_REFRESH);
     req.uid = uid
-    
+
     next()
   } catch (error) {
     console.log(error)

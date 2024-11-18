@@ -67,7 +67,7 @@ export const infoUser = async(req, res) => {
     console.log(error)
 		return res.status(500).json({error: error.message})
   }
-}
+};
 
 export const refreshToken = (req, res) => {
 	try {
@@ -78,9 +78,10 @@ export const refreshToken = (req, res) => {
 		console.log(error);
 		return res.status(500).json({error: error.message})
 	}
-}
+};
 
 export const logout = (req, res) => {
 	res.clearCookie('refreshToken');
 	res.json({ok: true})
-}
+};
+
