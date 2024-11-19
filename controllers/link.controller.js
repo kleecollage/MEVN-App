@@ -108,8 +108,6 @@ export const updateLink = async (req, res) => {
 		const { longLink } = req.body;
 		const link = await Link.findById(id);
 		
-		console.log(longLink)
-
 		if (!link) 
 			return res.status(404).json({ error: "Link doesn't exists" });
 		

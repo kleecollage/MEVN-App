@@ -23,8 +23,9 @@ app.use(cors({
       return callback(null, origin);
     }
     return callback("CORS error. Origin: " + origin + " not authorized")
-  }
-}))
+  },
+  credentials: true
+}));
 
 //* MIDLEWARES *// 
 app.use(express.json());
