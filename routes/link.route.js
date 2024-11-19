@@ -11,7 +11,7 @@ router.get('/', requireToken, getLinks)
 
 // GET       /api/v1/links/:id ---> single link
 // router.get('/:id', requireToken, paramsLinkValidator, getLink) // traditional GET used for CRUD's
-router.get('/:nanoLink', getLink)
+router.get('/:nanoLink', redirectLink)
 
 // POST      /api/v1/links -------> create link
 router.post('/', requireToken, bodyLinkValidator, createLink)
