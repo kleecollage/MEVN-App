@@ -1,11 +1,11 @@
-import 'dotenv/config';
-import './database/connectDb.js';
 import cookieParser from "cookie-parser";
-import express from "express";
 import cors from 'cors';
+import 'dotenv/config';
+import express from "express";
+import './database/connectDb.js';
 import authRouter from './routes/auth.route.js';
 import linkRouter from './routes/link.route.js';
-import redirectRoute from './routes/redirect.route.js'
+import redirectRoute from './routes/redirect.route.js';
 
 const app = express();
 const whiteList = [ process.env.ORIGIN1, process.env.ORIGIN2]
@@ -27,7 +27,7 @@ app.use(cors({
   credentials: true
 }));
 
-//* MIDLEWARES *// 
+//* MIDLEWARES *//
 app.use(express.json());
 app.use(cookieParser());
 // app.use(express.static('public')); // only 4 login/token testing
