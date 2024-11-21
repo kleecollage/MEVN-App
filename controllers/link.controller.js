@@ -14,17 +14,17 @@ export const getLinks = async (req, res) => {
 	}
 };
 
-//** GET ONE **//
+//** GET ONE V1 **//
 // Usual GET for traditional CRUDS
 export const getLinkV1 = async (req, res) => {
 	try {
 		const { id } = req.params;
 		const link = await Link.findById(id);
 
-		if (!link) 
+		if (!link)
 			return res.status(404).json({ error: "Link doesn't exists" });
 
-    if(!link.uid.equals(req.uid)) 
+    if(!link.uid.equals(req.uid))
       return res.status(401).json({ error: "Access Denied"})
 
 		return res.status(201).json({ link });
@@ -44,7 +44,7 @@ export const getLink = async (req, res) => {
 		const { nanoLink } = req.params;
 		const link = await Link.findOne({ nanoLink });
 		// validations
-		if (!link) 
+		if (!link)
 			return res.status(404).json({ error: "Link doesn't exists" });
 
 		return res.json({ longLink: link.longLink });
@@ -82,10 +82,10 @@ export const removeLink = async(req, res) => {
 		const { id } = req.params;
 		const link = await Link.findById(id);
 
-		if (!link) 
+		if (!link)
 			return res.status(404).json({ error: "Link doesn't exists" });
 
-    if(!link.uid.equals(req.uid)) 
+    if(!link.uid.equals(req.uid))
       return res.status(401).json({ error: "Access Denied"})
 
     await Link.findByIdAndDelete(id);
@@ -107,14 +107,14 @@ export const updateLink = async (req, res) => {
 		const { id } = req.params;
 		const { longLink } = req.body;
 		const link = await Link.findById(id);
-		
-		if (!link) 
+
+		if (!link)
 			return res.status(404).json({ error: "Link doesn't exists" });
-		
+
 		if (!longLink.startsWith('https://')) {
 			longLink = 'https://' + longLink;
 		}
-    
+
 		if(!link.uid.equals(req.uid))
       return res.status(401).json({ error: "Access Denied"})
 
