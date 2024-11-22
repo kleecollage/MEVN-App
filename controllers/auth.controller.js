@@ -1,7 +1,7 @@
 import { User } from '../models/User.js';
 import { generateRefreshToken, generateToken } from '../utils/tokenManager.js';
 
-// REGISTER CONTROLLER
+//** REGISTER CONTROLLER **//
 export const register = async (req, res) => {
 	// console.log(req.body);
 	const { email, password } = req.body;
@@ -31,21 +31,21 @@ export const register = async (req, res) => {
 	}
 };
 
-// LOGIN CONTROLLER
+//** LOGIN CONTROLLER **//
 export const login = async (req, res) => {
 	// console.log(req.body);
 	try {
 		const { email, password } = req.body;
-		
+
 		let user = await User.findOne({ email });
-    if (!user) 
+    if (!user)
       return res.status(403).json({ error: "User doesn't exists" });
 
 		const respuestaPassword = await user.comparePassword(password);
 		if (!respuestaPassword)
 			return res.status(403).json({ error: 'Incorrect Password' });
-    
-    //* TOKEN *//
+
+    // TOKEN //
     const { token, expiresIn } = generateToken(user.id)
 		generateRefreshToken(user.id, res)
 
@@ -59,7 +59,7 @@ export const login = async (req, res) => {
 	}
 };
 
-export const infoUser = async(req, res) => { 
+export const infoUser = async(req, res) => {
   try {
 		const user = await User.findById(req.uid).lean();
     return await res.json({ email: user.email, uid: user.uid })
@@ -79,9 +79,13 @@ export const refreshToken = (req, res) => {
 		return res.status(500).json({error: error.message})
 	}
 };
-
+//** LOGOUT **//
 export const logout = (req, res) => {
-	res.clearCookie('refreshToken');
-	res.json({ok: true})
+	res.clearCookie('refreshToken'), {
+		path: '/',
+		httpOnly: true,
+		secure: true,
+		sameSite: 'none'
+	};
+	res.json({ok: 'logout'})
 };
-

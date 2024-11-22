@@ -8,19 +8,18 @@ import linkRouter from './routes/link.route.js';
 import redirectRoute from './routes/redirect.route.js';
 
 const app = express();
-// const whiteList = [ process.env.ORIGIN1, process.env.ORIGIN2]
-const whiteList = [ 'https://mevn-app-kleec.netlify.app' ]
+const whiteList = [ process.env.ORIGIN1, process.env.ORIGIN2 ]
 
 //** CORS **//
 //app.use(cors());
-
 // app.use(cors({
 //   origin: [process.env.ORIGIN1]
 // }))
 
 app.use(cors({
   origin: function(origin, callback) {
-    if (!origin || whiteList.includes(origin)) {
+    if (!origin || whiteList.includes(origin))
+    {
       return callback(null, origin);
     }
     return callback("CORS error. Origin: " + origin + " not authorized")
