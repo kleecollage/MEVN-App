@@ -8,7 +8,8 @@ import linkRouter from './routes/link.route.js';
 import redirectRoute from './routes/redirect.route.js';
 
 const app = express();
-const whiteList = [ process.env.ORIGIN1, process.env.ORIGIN2]
+// const whiteList = [ process.env.ORIGIN1, process.env.ORIGIN2]
+const whiteList = [ 'https://mevn-app-kleec.netlify.app' ]
 
 //** CORS **//
 //app.use(cors());
@@ -30,6 +31,13 @@ app.use(cors({
 //* MIDLEWARES *//
 app.use(express.json());
 app.use(cookieParser());
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', process.env.ORIGIN1);
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  next();
+});
+
 // app.use(express.static('public')); // only 4 login/token testing
 //* ROUTES *//
 app.use('/', redirectRoute); // backend redirection examples
