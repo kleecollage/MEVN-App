@@ -19,7 +19,8 @@ export const generateRefreshToken = (uid, res) => {
       httpOnly: true,
       secure: process.env.MODE == "production", // false
       expires: new Date(Date.now() + expiresIn * 1000),
-      sameSite:'none'
+      sameSite:'none',
+      partitioned: true
     });
   } catch (error) {
     console.log(error)
