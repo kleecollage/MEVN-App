@@ -9,7 +9,7 @@ export const verifyAuth =  (req, res, next) => {
         message: 'User not valid',
       })
     }
-    req.user = decoded.data;
+    req.user = decoded.data; // brings token info
     next();
   })
 }

@@ -1,11 +1,14 @@
 import express from 'express';
+import { verifyAuth } from '../middleware/authentication.js';
 import Note from '../models/noteModel.js'; // Note model //
 
 const router = express.Router();
 
 // POST: Add a new note // EndPoint: /api/new-note
-router.post('/new-note', async (req, res) => {
+router.post('/new-note', verifyAuth, async (req, res) => {
   const body = req.body
+  body.userId = req.user._id
+
   try {
     const noteDB = await Note.create(body)
     res.status(200).json(noteDB)
@@ -18,7 +21,7 @@ router.post('/new-note', async (req, res) => {
 });
 
 // GET: Get note by Id // EndPoint: /api/note/:id
-router.get('/note/:id',async(req, res) => {
+router.get('/note/:id', async(req, res) => {
   const _id = req.params.id;
   try {
     const noteDB = await Note.findOne({_id})
@@ -32,9 +35,11 @@ router.get('/note/:id',async(req, res) => {
 })
 
 // GET: Get all notes // EndPoint: /api/note/
-router.get('/note', async(req, res) => {
+router.get('/note', verifyAuth, async(req, res) => {
+  const userId = req.user._id
+
   try {
-    const noteDB = await Note.find();
+    const noteDB = await Note.find({userId});
     res.json(noteDB)
   } catch (error) {
     return res.status(400).json({
