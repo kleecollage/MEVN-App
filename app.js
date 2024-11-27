@@ -1,5 +1,6 @@
 import history from 'connect-history-api-fallback';
 import cors from 'cors';
+import 'dotenv/config';
 import express from 'express';
 import mongoose from 'mongoose';
 import morgan from 'morgan';
@@ -13,7 +14,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 //** DB CONNECTION **//
-mongoose.connect(uri).then(
+mongoose.connect(process.env.MONGO_URI).then(
   () => { console.log('connected to mongoDb') },
   err => { console.error('Error connecting to MongoDB:', err); }
 );
