@@ -7,8 +7,6 @@ yarn.lock
 
 # Logs
 logs/
-*.log
-*.log.*
 
 # VS Code
 .vscode/
