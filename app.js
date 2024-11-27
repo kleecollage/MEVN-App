@@ -2,9 +2,9 @@ import history from 'connect-history-api-fallback';
 import cors from 'cors';
 import express from 'express';
 import morgan from 'morgan';
+import path from 'path';
 
 const app = express()
-const path = require('path')
 
 // MIDDLEWARES //
 app.use(morgan('tiny'))
