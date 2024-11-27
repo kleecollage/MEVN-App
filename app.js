@@ -6,7 +6,9 @@ import mongoose from 'mongoose';
 import morgan from 'morgan';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import loginRoutes from './routes/loginRoutes.js';
 import noteRoutes from './routes/noteRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 
 //** APP INIT **//
 const app = express()
@@ -26,7 +28,9 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 //** ROUTES **//
-app.use('/api', noteRoutes)
+app.use('/api', noteRoutes);
+app.use('/api', userRoutes);
+app.use('/login', loginRoutes);
 // app.get('/', function (req, res) {
 //   res.send('Hello World')
 // })
