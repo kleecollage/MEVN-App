@@ -13,7 +13,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 //** DB CONNECTION **//
-const uri="mongodb+srv://mevn_user:CwnPCCJykmXF33Hu@cluster0.zeg8wsi.mongodb.net/mevn_app?retryWrites=true&w=majority&appName=backendv2"
 mongoose.connect(uri).then(
   () => { console.log('connected to mongoDb') },
   err => { console.error('Error connecting to MongoDB:', err); }
